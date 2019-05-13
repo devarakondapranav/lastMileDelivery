@@ -1,0 +1,517 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Hammersmith+One" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLYpdfkqJlpaVgUrkzulzYr3uvspxd3wU&libraries=places"></script>
+
+
+<script src="https://www.gstatic.com/firebasejs/5.8.5/firebase-app.js"></script>
+
+<!-- Add additional services that you want to use -->
+
+<script src="https://www.gstatic.com/firebasejs/5.8.5/firebase-database.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "", //firebase api key here
+    authDomain: "sih-pepperfry.firebaseapp.com",
+    databaseURL: "https://sih-pepperfry.firebaseio.com",
+    projectId: "sih-pepperfry",
+    storageBucket: "sih-pepperfry.appspot.com",
+    messagingSenderId: "991032623689"
+  };
+  firebase.initializeApp(config);
+
+</script>
+
+
+
+
+     <style type="text/css">
+
+
+  div#loading {
+    
+    display: none;
+    background-image: url('/static/332.gif');
+    background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; 
+    background-color: #f6f6f6;
+    color: #f6f6f6;
+
+    }
+    .cardsize{
+      width: 940px;
+    }
+
+    </style>
+    
+
+    <script type="text/javascript">// <![CDATA[
+        function loading(){
+            //alert("loading");
+            var div = document.getElementById("content");
+            
+            document.getElementById("loading").style.height = "100%"; 
+            document.getElementById("loading").style.width = "100%";         
+            document.getElementById("loading").style.display = "block";
+            var label = document.createElement("label");
+            label.innerHTML = "Please wait while we calculate the optimal routes"
+
+            document.getElementById("loading").appendChild(label);
+            
+
+            
+
+        }//preloader
+        //window.onload = loading;
+// ]]></script>
+    
+  </head>
+<body style="font-family: Hammersmith One;font-weight: 400;">
+  
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"><img src="/static/pflogo.png" style="height: 50px"></img></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Assign Orders <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">View Orders</a>
+        </li>
+        <li class="nav-item">
+                  <a class="nav-link" href="{{url_for('sendmail')}}">send mails</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        Help
+      </span>
+    </div>
+    </nav>
+    <div style="width: 950px;margin: 0 auto;">
+    <div id="loading">
+      Please wait while we calculate the optimal route
+    </div>
+   
+      <div id = "content">
+      <h1>Assign orderss</h1>
+
+
+          
+              <input type="button" id="addRow" value="Add New Order" onclick="addRow()" class="btn btn-danger w3-button w3-black w3-hover-gray w3-ripple" /><br><br>
+              <form action="http://localhost:5000/maps" method="POST">
+                  No of vehicles<input type="number" name="num_vehicles" id="num_vehicles" onfocusout = "showCapacityBoxes()"><br><br>
+                  <input type="checkbox" name="withTraffic" id="withTraffic">Consider Traffic
+                  <hr>
+                  <div id = driver_capacities>
+                      
+                  </div>
+                  <hr>
+                  <div class="w3-card-4 cardsize">
+                  <div id="cont">
+                      <div class="w3-container w3-black">
+                        <h4><span id="routingType">Type of routing: Distance</span></h4>
+                      </div>
+                  </div>
+              <input type="hidden" name="rowcount" id = "rowcount" value="0">
+              </div>
+              <div id ="submitButton"><br><br></div>
+            
+              </form>
+      </div>
+  </div>
+
+
+<script>
+    // ARRAY FOR HEADER.
+
+    console.log("sdkjb");
+    var arrHead = new Array();
+    arrHead = ['', 'Name of the customer','Address', 'Capacity', 'start', 'end'];      // SIMPLY ADD OR REMOVE VALUES IN THE ARRAY FOR TABLE HEADERS.
+
+    // FIRST CREATE A TABLE STRUCTURE BY ADDING A FEW HEADERS AND
+    // ADD THE TABLE TO YOUR WEB PAGE.
+    var count = -1;
+    var flag = false;
+
+    function createTable() {
+        var empTable = document.createElement('table');
+        empTable.setAttribute('id', 'empTable');  
+               // SET THE TABLE ID.
+
+        var tr = empTable.insertRow(-1);
+
+        for (var h = 0; h < arrHead.length; h++) {
+            var th = document.createElement('td');          // TABLE HEADER.
+            th.innerHTML = arrHead[h];
+            tr.appendChild(th);
+        }
+
+        var div = document.getElementById('cont');
+        div.appendChild(empTable);    // ADD THE TABLE TO YOUR WEB PAGE.
+    }
+    createTable();
+
+
+    function autoFillAddress(obj)
+    {
+      new google.maps.places.Autocomplete(obj);
+    }
+
+    // ADD A NEW ROW TO THE TABLE.s
+    function addRow()
+    {
+        var empTab = document.getElementById('empTable');
+        var rowCnt = empTab.rows.length;        // GET TABLE ROW COUNT.
+        var tr = empTab.insertRow(rowCnt);      // TABLE ROW.
+        tr = empTab.insertRow(rowCnt);
+        count++;
+
+        var countElement = document.getElementById("rowcount").value;
+        document.getElementById("rowcount").value = Number(countElement) + 1;
+
+        for (var c = 0; c < arrHead.length; c++) {
+            
+            var td = document.createElement('td');          // TABLE DEFINITION.
+            td = tr.insertCell(c);
+
+            if (false) {           // FIRST COLUMN.
+                // ADD A BUTTON.
+                var button = document.createElement('input');
+
+                // SET INPUT ATTRIBUTE.
+                button.setAttribute('type', 'button');
+                button.setAttribute('value', 'Remove');
+
+                // ADD THE BUTTON's 'onclick' EVENT.
+                button.setAttribute('onclick', 'removeRow(this)');
+                button.setAttribute('class', 'btn btn-primary')
+
+                td.appendChild(button);
+            }
+            else {
+                // CREATE AND ADD TEXTBOX IN EACH CELL.
+                if(false) //this is file
+                {
+                  var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('value', '');
+                ele.setAttribute('name', 'address'+String(count));
+                ele.setAttribute('id', 'address'+String(count));
+
+                td.appendChild(ele);
+                }
+                else{
+                  if(c == 1)//firstname
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'name' + String(count));
+                    ele.setAttribute('id', 'name' + String(count));
+
+
+                    td.appendChild(ele);
+                  }
+                  else if(c==2)//lastname
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'address'+String(count));
+                    ele.setAttribute('id', 'address'+String(count));
+                    ele.setAttribute('onfocus', "autoFillAddress(this)");
+
+
+                    td.appendChild(ele);
+                  }
+                  else if (c==3)
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'capacity'+String(count));
+                    ele.setAttribute('id', 'capacity'+String(count));
+
+
+                    td.appendChild(ele);
+                    document.getElementById('capacity'+String(count)).style.visibility = "hidden";
+                  }
+                  else if (c==4)
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'st'+String(count));
+                    ele.setAttribute('id', 'st'+String(count));
+
+
+                    td.appendChild(ele);
+                    document.getElementById('st'+String(count)).style.visibility = "hidden";
+                  }
+                  else if(c==5)
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'et'+String(count));
+                    ele.setAttribute('id', 'et'+String(count));
+
+
+                    td.appendChild(ele);
+                    document.getElementById('et'+String(count)).style.visibility = "hidden";
+                  }
+                  
+              }
+            }
+        }
+        if(flag == false)
+        {          
+
+          document.getElementById('name0').setAttribute('placeholder', 'Depot') ;
+          document.getElementById('address0').setAttribute('placeholder', 'Depot Address') ;
+
+          document.getElementById('capacity0').setAttribute('value', '0') ;
+          document.getElementById('st0').setAttribute('value', '00:00');
+          document.getElementById('et0').setAttribute('value', '00:00');  
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'distance');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('id', 'distance')
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Distance";
+          document.getElementById("submitButton").appendChild(varText);
+          document.getElementById("distance").checked = true;
+
+
+
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'time');
+          ele.setAttribute('id', 'time');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Time";
+          document.getElementById("submitButton").appendChild(varText);
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'capacity');
+          ele.setAttribute('id', 'capacity');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Capacity"
+          document.getElementById("submitButton").appendChild(varText);
+
+
+
+          var br = document.createElement('br');
+          document.getElementById("submitButton").appendChild(br);
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'submit');
+          ele.setAttribute('value', 'Submit Data');
+          ele.setAttribute('class', 'btn btn-success w3-button w3-hover-gray w3-black w3-ripple');
+          ele.setAttribute('onclick', 'loading()');
+          flag = true;
+          //ele.setAttribute('onclick', 'submitData()');
+          document.getElementById("submitButton").appendChild(ele);
+
+        }
+        adjustui();
+    }
+
+    // DELETE TABLE ROW.
+    function removeRow(oButton) {
+        var empTab = document.getElementById('empTable');
+        empTab.deleteRow(oButton.parentNode.parentNode.rowIndex);       // BUTTON -> TD -> TR.
+    }
+
+
+    function adjustui()
+    {
+        var empTab = document.getElementById('empTable');
+
+        var rowCnt = empTab.rows.length;
+
+        
+        
+            
+            if(document.getElementById('distance').checked == true)
+            {
+                var divBox = document.getElementById('driver_capacities');
+                divBox.innerHTML = null;
+                for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "hidden";
+                    document.getElementById('et' + String(i)).style.visibility = "hidden";
+                    document.getElementById('st' + String(i)).style.visibility = "hidden";
+
+                }
+            }
+            else if(document.getElementById('time').checked == true)
+            {
+                var divBox = document.getElementById('driver_capacities');
+                divBox.innerHTML = null;
+                for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "visible";
+                    document.getElementById('et' + String(i)).style.visibility = "visible";
+                    document.getElementById('st' + String(i)).style.visibility = "visible";
+
+                }
+            }
+            else if(document.getElementById('capacity').checked == true)
+            {
+                showCapacityBoxes();
+                 for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "visible";
+                    document.getElementById('et' + String(i)).style.visibility = "hidden";
+                    document.getElementById('st' + String(i)).style.visibility = "hidden";
+
+                }
+            }
+        
+       
+    }
+    function showCapacityBoxes()
+    {
+        if(document.getElementById('capacity').checked == true)
+        {
+            var num_vehicles = Number(document.getElementById('num_vehicles').value);
+            var divBox = document.getElementById('driver_capacities');
+            divBox.innerHTML = null;
+
+            for(var i=0;i<num_vehicles;i++)
+            {
+                var foo = document.createElement('label');
+                foo.innerHTML = "DriverCapacity " + String(i);
+                divBox.appendChild(foo);
+
+                var tb = document.createElement('input');
+                tb.setAttribute('type', 'text');
+                tb.setAttribute('id', 'driver_capacity' + String(i));
+                tb.setAttribute('name', 'driver_capacity' + String(i));
+                divBox.appendChild(tb);
+
+            }
+        }
+        else
+        {
+
+        }
+
+
+    }
+
+
+    function validateForm()
+    {
+      var myTab = document.getElementById('empTable');
+        var values = new Array();
+
+        // LOOP THROUGH EACH ROW OF THE TABLE.
+        for (row = 1; row < myTab.rows.length - 1; row++) {
+            for (c = 0; c < myTab.rows[row].cells.length; c++) {   // EACH CELL IN A ROW.
+
+                var element = myTab.rows.item(row).cells[c];
+                if (element.childNodes[0].getAttribute('type') == 'text') {
+                    values.push("'" + element.childNodes[0].value + "'");
+                    if(element.childNodes[0].value == '')
+                    {
+                      alert("You have left some fields blank for the " + String(row) + " entry");
+                      return false;
+                    }
+                }
+                else if (element.childNodes[0].getAttribute('type') == 'file') {
+                    
+                    if(element.childNodes[0].files.length == 0)
+                    {
+                      alert("You havent uploaded files for the " + String(row) + " entry");
+                      return false;
+                    }
+                }
+
+            }
+        }
+        
+        console.log(values);
+        return true;
+    }
+
+    
+</script>
+
+
+<script type="text/javascript">
+  
+  var f = firebase.database().ref();
+  console.log("sdkjb");
+  f.child("incomplete").child("orderid").once("value", function(snapshot)
+  {
+    var iorders = snapshot.val();
+    console.log(iorders);
+    if(Object.keys(iorders).length > 1)
+    {
+      alert("You have incomplete orders from yesterday");
+      console.log("evkjn");
+      var start = 1;
+      for (var key in iorders)
+      {
+        console.log("adkjnas");
+        //addRow();
+        if(key != 'dummy')
+        {
+          console.log(iorders[key]);
+          //addRow();
+          document.getElementById("addRow").click();
+          document.getElementById('name' + String(start)).value = iorders[key].split(" ")[1];
+          document.getElementById("address" + String(start)).value = iorders[key].split(" ")[0];
+          f.child("incomplete").child("orderid").child(key).remove();
+          console.log("done");
+          start += 1;
+        }
+        else
+        {
+          console.log("hey");
+        }
+      }
+
+    }
+  })
+
+  
+  
+</script>
+
+</body>
+
+</html>

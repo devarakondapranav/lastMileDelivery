@@ -1,0 +1,48 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    map:cameraZoom="12"
+    tools:context="com.nihanth.maproutebetweenmarkers.MapsActivity" >
+
+    <Button
+        android:id="@+id/manager"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end|top"
+        android:background="@drawable/question"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:paddingRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingEnd="10dp" />
+
+    <Button
+        android:id="@+id/order_summary"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end|top"
+        android:background="@drawable/order"
+        android:layout_marginRight="60dp"
+        android:layout_marginTop="15dp"
+        android:paddingRight="10dp"
+        android:layout_marginEnd="60dp"
+        android:paddingEnd="10dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:src="@drawable/ic_baseline_mail_outline_24px"
+        map:fabSize="normal"
+        android:backgroundTint="#e75a16"
+        android:elevation="6dp"
+        android:layout_margin="16dp"/>
+    
+</fragment>
+
+

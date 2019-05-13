@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Hammersmith+One" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+
+	<title></title>
+	<style type="text/css">
+
+	.cent{
+		text-align: center;
+	}
+
+
+		div#content {
+    display: none;
+    }
+ 
+div#loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(loading.gif) no-repeat;
+    cursor: wait;
+    }
+	</style>
+	<script type="text/javascript">// <![CDATA[
+        function preloader(){
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("content").style.display = "block";
+        }//preloader
+        window.onload = preloader;
+// ]]></script>
+</head>
+<body style="font-family: Hammersmith One;font-weight: 400;">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"><img src="/static/pflogo.png" style="height: 50px"></img></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Assign Orders <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">View Orders</a>
+        </li>
+        
+      </ul>
+      <span class="navbar-text">
+        Help
+      </span>
+    </div>
+    </nav>
+    <div style="width: 950px;margin: 0 auto;">
+
+	<div id = "loading">
+		
+	</div>
+
+	<div id = "content">
+		<div id="customer_details">
+			<h2>Note: {{message}}</h2><br><br>
+			Following are the given orders<br>
+		<table class="table">
+			<tr>
+			<th>Order id</th>
+			<th>Address</th></tr>
+			{% for add in addresses%}
+		
+	    <tr>
+	      <td>{{loop.index0}}</td>
+	      <td>{{add}}</td>
+	    </tr>
+
+	  {% endfor %}
+		</table>	
+		</div>
+		<div id = "routes">
+			routes are {{route_ll}}
+		
+			{% for route in route_ll %}
+				<div class="card text-white bg-dark mb-3" style="width: 950px">
+			  <div class="card-header">Vehicle No: {{loop.index0}}</div>
+			  <div class="card-body">
+			    <h5 class="card-title"></h5>
+			    <p class="card-text">{{route}}</p>
+			  </div>
+				</div>
+			{% endfor %}
+			
+
+
+			<div class="cent">
+
+			<form action="http://localhost:5000/submitToDB" method="POST">
+				<input type="hidden" name="optimal_routes" value="{{optimal_routes}}" >
+				<input type="submit" name="" class="w3-button w3-hover-gray w3-black cent" value="Assign to drivers">
+			</form>
+
+			<form action="http://localhost:5000/rendermap" method="POST">
+				<input type="submit" name="" class="w3-button w3-hover-gray w3-black cent" value="View Map">
+			</form>
+		</div>
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>

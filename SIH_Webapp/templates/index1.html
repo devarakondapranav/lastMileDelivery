@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEOPgaDDh26z3vnkiNH22l_mHqBNjxUCc&callback=myMap"></script>
+	<script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+	<script type="text/javascript" >
+    //window.alert("Yo");
+var bus_node;
+bus_node = "bus_18";
+function changeMap()
+{
+  // window.alert("Setting the bus");
+  // if(document.getElementById("bus_18").checked)
+  //   bus_node = "bus_18";
+  // if(document.getElementById("bus_17").checked)
+  //   bus_node = "bus_17";
+  myMap()
+  //window.alert("Called the map function");
+}
+
+function myMap() {
+  // window.alert("Jai Balayya");
+  //var flag = true;
+  /*
+  if(document.getElementById("bus_18").checked)
+    bus_node = "bus_18";
+  if(document.getElementById("bus_17").checked)
+    bus_node = "bus_17";
+  */
+
+
+
+  var firebaseRef = firebase.database().ref();
+var firebaseLocRef = firebase.database().ref().child("users");
+  var mapCanvas = document.getElementById("map");
+  var map;
+  var marker;
+
+  firebaseLocRef.once("", function(snapshot){
+    var location = snapshot.val();
+    location = location.split(" ");
+    var latitude = parseFloat(location[0]);
+    //window.alert(latitude);
+    var longitude = parseFloat(location[1]);
+    var myCenter = new google.maps.LatLng(latitude,longitude); 
+    var mapOptions = {center: myCenter, zoom: 15};
+    
+     map = new google.maps.Map(mapCanvas,mapOptions);
+        
+     marker = new google.maps.Marker({
+    position: myCenter,
+    animation: google.maps.Animation.BOUNCE
+  });
+  marker.setMap(map);
+
+  })
+
+
+  firebaseLocRef.on("", function(snapshot){
+    var location = snapshot.val();
+    location = location.split(" ");
+    var latitude = parseFloat(location[0]);
+    //window.alert(latitude);
+    var longitude = parseFloat(location[1]);
+    var myCenter = new google.maps.LatLng(latitude,longitude); 
+    var mapOptions = {center: myCenter, zoom: 15};
+    
+    //var map = new google.maps.Map(mapCanvas,mapOptions);
+    marker.setMap(null);
+    marker = new google.maps.Marker({
+    position: myCenter,
+    animation: google.maps.Animation.BOUNCE
+  });
+  map.panTo(myCenter);
+  marker.setMap(map);
+
+  })
+
+
+  
+} 
+  </script>
+
+</head>
+<body>
+<!-- <h1>S v1.0</h1><br>
+<input type="radio" name="bus_node" id = "bus_18" checked="true" onclick="changeMap()">Bus 18<br>
+<input type="radio" name="bus_node" id = "bus_17" onclick="changeMap()" >Bus 17<br>
+ -->
+<div id="map" style="width:100%;height:600px"></div>
+
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBjXSQjHvgb_rURT9y4PUv7jRg4ueFDK1M",
+    authDomain: "sih-pepperfry.firebaseapp.com",
+    databaseURL: "https://sih-pepperfry.firebaseio.com",
+    projectId: "sih-pepperfry",
+    storageBucket: "sih-pepperfry.appspot.com",
+    messagingSenderId: "991032623689"
+  };  
+  firebase.initializeApp(config);
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEOPgaDDh26z3vnkiNH22l_mHqBNjxUCc&callback=myMap"></script>
+<!--
+To use this code on your website, get a free API key from Google.
+Read more at: https://www.w3schools.com/graphics/google_maps_basic.asp
+-->
+
+</body>
+</html>

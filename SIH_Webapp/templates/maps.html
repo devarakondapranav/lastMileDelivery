@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+/*start*/
+		 #right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      } 
+      #right-panel select, #right-panel input {
+        font-size: 15px;
+      }
+      #right-panel select {
+        width: 100%;
+      }
+      #right-panel i {
+        font-size: 12px;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+        float: left;
+        width: 70%;
+        height: 100%;
+      }
+      #right-panel {
+        margin: 20px;
+        border-width: 2px;
+        width: 20%;
+        height: 400px;
+        float: left;
+        text-align: left;
+        padding-top: 0;
+      }
+     
+/*end*/
+
+
+
+		div#content {
+    display: none;
+    }
+ 
+div#loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(loading.gif) no-repeat;
+    cursor: wait;
+    }
+	</style>
+
+
+	<script type="text/javascript">// <![CDATA[
+        function preloader(){
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("content").style.display = "block";
+        }//preloader
+        window.onload = preloader;
+  }
+// ]]>
+	console.log(result)
+</script>
+</head>
+<body>
+  <h1 align="center"> A is the DEPOT  </h1>
+  <!-- {{optimal_routes}} -->
+	<div id = "loading">
+		
+	</div>
+	
+    <div id="map"></div>
+    <div id="right-panel">
+    
+    <b>Route Nos:</b> <br>
+    <br>
+
+    <select id="options1">
+    </select>
+   
+    </div>
+
+    <script>
+
+    	function addopt()
+	 	{
+	 		var select 	= document.getElementById("options1");
+			for (var i = 1; i<={{result|length}}; i++){
+		    	var opt = document.createElement('option');
+		    	opt.value = i;
+		    	opt.innerHTML = "Route: "+i;
+		    	select.appendChild(opt);
+			}
+		}
+		addopt();
+		
+
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        // var directionsDisplays = new google.maps.DirectionsRenderer(
+        // {
+        //       polylineOptions: {
+        //       strokeColor: "red"
+        //     } 
+        //   }
+        //   );
+        // var directionsDisplay1 = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+           zoom: 6,
+           center: {lat: 41.85, lng: -87.65}
+        });
+        
+        
+        var res = {{ result|tojson }};
+        // console.log(res);
+        // 
+        // var directionsDisplays= [];
+        // for(var i=0;i<{{result|length}};i++)
+        // {
+           var directionsDisplay = new google.maps.DirectionsRenderer();
+           directionsDisplay.setMap(map);   
+        // directionsDisplay.setMap(map);
+        // directionsDisplay1.setMap(map);
+        // console.log({{result[0]}});
+        
+        calculateAndDisplayRoute(directionsService, directionsDisplay,0);
+        document.getElementById('options1').addEventListener('change', function() {
+          var rout=document.getElementById("options1").value;
+          console.log("Route="+rout);
+          calculateAndDisplayRoute(directionsService, directionsDisplay,rout-1);
+          // calculateAndDisplayRoute(directionsService, directionsDisplay1);
+        });
+      }
+
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay,k) {
+        var waypts = [];
+        // for(var j=1;i<result[j].length-1;i++)
+        // {
+        //      waypts.push({
+        //       location: result[i][j],
+        //       stopover: true
+        //     });
+        // }
+        var res = {{ result|tojson }};
+        console.log(res[k]);
+        
+        for(var l=1;l<res[k].length-1;l++)
+          waypts.push({
+              location: res[k][l],
+              stopover: true
+            });
+          
+            // var waypts1 = [];
+        //for (var i = 0; i < 1; i++) {
+          //if (checkboxArray.options[i].selected) {
+            // waypts1.push({
+            //   location: "Himayatnagar",
+            //   stopover: true
+            // });
+            // waypts1.push({
+            //   location: "Secunderbad",
+            //   stopover: true
+            // });
+          //}
+        //}
+        // var len = 
+        // print("Waypoints",waypts1)
+        // console.log(waypts1)
+        directionsService.route({
+          origin: res[0][0] ,
+          destination: res[k][res[k].length-1] ,
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+        // directionsService.route({
+        //   origin: "Shamirpet",
+        //   destination: "Banjara Hills",
+        //   waypoints: waypts,
+        //   optimizeWaypoints: true,
+        //   travelMode: 'DRIVING'
+        // }, function(response, status) {
+        //   if (status === 'OK') {
+        //     directionsDisplay1.setDirections(response);
+        //     var route = response.routes[0];
+        //   } else {
+        //     window.alert('Directions request failed due to ' + status);
+        //   }
+        // });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1C9PZFB8ejjNRK5AZKTcOyo7kIG2kjjA&callback=initMap">
+    </script>
+
+
+</body>
+</html>

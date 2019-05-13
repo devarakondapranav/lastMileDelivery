@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "991032623689",
+    "firebase_url": "https://sih-pepperfry.firebaseio.com",
+    "project_id": "sih-pepperfry",
+    "storage_bucket": "sih-pepperfry.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991032623689:android:941a12a8484ec891",
+        "android_client_info": {
+          "package_name": "com.nihanth.maproutebetweenmarkers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991032623689-jhiitojgm7dgdpgn3kl97fqupgq6mrm5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlXSzhBcOw87sq4smyVXgY279K0haJ85E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991032623689:android:d2a69ba6f5311042",
+        "android_client_info": {
+          "package_name": "com.pepperfry.lastmile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991032623689-jhiitojgm7dgdpgn3kl97fqupgq6mrm5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlXSzhBcOw87sq4smyVXgY279K0haJ85E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
